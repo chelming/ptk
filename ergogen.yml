@@ -1,0 +1,274 @@
+meta:
+  engine: 4.0.0
+  name: ptk
+  version: 0.4
+  author: jcmkk3
+  url: https://github.com/jcmkk3/trochilidae
+
+presets:
+  # These presets provide different layout options
+  # Select a preset in the `units` section below
+  # Note: The appropriate switch footprint will still need to be set in the `pcb` section
+  defaults:
+    capx: 17.5      # Key cap size horizontal
+    capy: 16.6      # Key cap size vertical
+    kx: 18.5        # Key spacing horizontal
+    ky: 17.5        # Key spacing vertical
+    padding: 2      # General padding
+    px: kx + padding      # Padding for PCB
+    py: ky + padding      # Padding for PCB
+
+    pinky_splay: 5  # Degrees of splay between pinky and ring columns
+    pinky_adj: -5   # Adjustment to compensate for splay spacing
+    
+    ring_splay: 3
+    ring_adj: -8
+    ring_stagger: 0.7ky  # Stagger is relative to the previous column
+    
+    middle_splay: 0
+    middle_adj: 0
+    middle_stagger: 0.5ky
+    
+    index_splay: 3
+    index_adj: 8
+    index_stagger: -0.3ky
+    
+    inner_adj: 0
+    inner_stagger: -0.5ky
+    
+    thumb_offsetx: .6kx
+    thumb_offsety: -1.25ky
+
+    thumb_tucky_splay: -8
+
+    thumb_reachy_splay: -8
+    thumb_reacy_adj: -8
+    thumb_reachy_stagger: -0.08ky # Stagger between thumb keys
+
+
+  choc_spaced:
+    $extends: presets.defaults
+  
+  choc_min_spaced:
+    $extends: presets.defaults
+    capx: 14.5
+    capy: 14.5
+    kx: 15.5
+    ky: 15.5
+    middle_splay: 3
+    middle_adj: -5
+    thumb_offsetx: 1/3kx
+
+  mx_spaced:
+    $extends: presets.defaults
+    capx: 18
+    capy: 18
+    kx: 19
+    ky: 19
+    pinky_adj: -4
+    ring_adj: -10
+  
+  mx_min_spaced:
+    $extends: presets.defaults
+    capx: 15.5
+    capy: 15.5
+    kx: 16.5
+    ky: 16.5
+    middle_splay: 3
+    middle_adj: -5
+    thumb_offsetx: 1/3kx
+
+units:
+  $extends: presets.choc_spaced
+
+  # Defaults/Constants
+  # ====================
+  $default_height: 0  # Points invisible by default unless height/width explicitly set
+  $default_width: 0
+  promicro_x: 33
+  promicro_y: 18
+  sf: 15
+
+points:
+  # Keys/Switches
+  # =============
+  zones.matrix:
+    anchor.shift: [150, -180]
+    rotate: pinky_splay + ring_splay + middle_splay
+    key:
+      width: capx
+      height: capy
+      spread: kx      
+      padding: ky
+    rows:
+      bottom:
+      home:
+      top:
+    columns:
+      pinky:
+        rows.top.skip: true
+        rows.bottom.skip: true
+      ring:
+        key.stagger: ring_stagger
+        key.splay: -pinky_splay
+        key.origin: [0, pinky_adj]
+      middle:
+        key.stagger: middle_stagger
+        key.splay: -ring_splay
+        key.origin: [0, ring_adj]
+      index:
+        key.stagger: index_stagger
+        key.splay: -middle_splay
+        key.origin: [0, middle_adj]
+      inner:
+        key.stagger: inner_stagger
+        key.splay: -index_splay
+        key.origin: [0, index_adj]
+        rows.bottom.skip: true
+  zones.thumb:
+    anchor:
+      ref: matrix_index_bottom
+      shift: [thumb_offsetx, thumb_offsety]
+    key.$extends: points.zones.matrix.key
+    columns:
+      tucky:
+        key.splay: thumb_tucky_splay
+      reachy:
+        key.stagger: thumb_reachy_stagger
+        key.splay: thumb_reachy_splay
+        key.origin: [0, thumb_reacy_adj]
+
+  # Components
+  # ==========
+  zones.mcu:
+    anchor:
+      ref: matrix_inner_home
+      shift: [0.25promicro_y + 1kx, 0ky]
+    key:
+      width: promicro_y
+      height: promicro_x
+  zones.reset:
+    anchor:
+      - ref: mcu
+        shift: [0, -0.5promicro_x - 6]
+        affect: y
+      - ref: mcu
+        shift: [2.5, 0]
+        affect: x
+    key:
+      height: 3
+      width: 6
+  zones.mounting_hole_top:
+    anchor:
+      - ref: matrix_ring_top
+        affect: y
+        shift: [0, 0.5ky + 2.5]
+      - ref: matrix_middle_top
+        affect: x
+        shift: [-0.5kx - 1.5, 0]
+    key:
+      height: 2
+      width: 2
+  zones.mounting_hole_bottom:
+    anchor:
+      - ref: matrix_inner_home
+        affect: y
+        shift: [0, -0.5ky - 2.5]
+      - ref: matrix_index_bottom
+        affect: x
+        shift: [0.5kx + 2.5, 0]
+    key.$extends: points.zones.mounting_hole_top.key
+
+outlines:
+  board:
+    - what: rectangle
+      where:
+        - /matrix_.*/
+      size: [px, py]
+      corner: 2
+    - what: rectangle
+      where:
+        - /thumb_.*/
+      size: [px, py + 20]
+      adjust.shift: [0, 10]
+      corner: 2
+    - what: rectangle
+      where: mcu
+      size: [promicro_y + 9, promicro_x + 4]
+      adjust.shift: [-3, 0]
+      corner: 2
+    - what: circle
+      where: /mounting_hole_.*/
+      radius: 3
+  _mcu:
+    - what: rectangle
+      where: mcu
+      size: [promicro_y, promicro_x]
+  _reset:
+    - what: rectangle
+      where: reset
+      size: [9, 9]
+  _mounting_holes:
+    - what: circle
+      where: /mounting_hole_.*/
+      radius: 1
+  _keycaps:
+    - what: rectangle
+      where:
+        - /matrix_.*/
+        - /thumb_.*/
+      size: [capx, capy]
+      bound: false
+  key_demo:
+    - board
+    - ^_mcu
+    - ^_mounting_holes
+    - ^_keycaps
+
+pcbs.ptk:
+  outlines.main:
+    outline: board
+  footprints:
+    - what: choc
+      where:
+        - /matrix_.*/
+        - /thumb_.*/
+      params:
+        from: GND
+        to: "{{name}}"
+        reverse: true
+        keycaps: true
+    - what: promicro
+      where: mcu
+      adjust.shift: [1.5, 0]  # Compensate for midpoint being off-center 
+      params:
+        orientation: up
+        P21: matrix_pinky_top
+        P20: matrix_pinky_home
+        P19: matrix_ring_top
+        P18: matrix_ring_home
+        P15: matrix_ring_bottom
+        P14: matrix_middle_top
+        P16: matrix_middle_home
+        P10: matrix_middle_bottom
+        P3: matrix_index_top
+        P4: matrix_index_home
+        P5: matrix_index_bottom
+        P6: matrix_inner_top
+        P7: matrix_inner_home
+        P8: thumb_reachy
+        P9: thumb_tucky
+    - what: jstph
+      where: battery_connector
+      params:
+        pos: RAW
+        neg: GND
+    - what: via
+      where: /mounting_hole_.*/
+      params.net: ""
+    - what: button
+      where: reset
+      adjust.rotate: 90
+      params:
+        from: RST
+        to: GND
