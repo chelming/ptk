@@ -36,8 +36,8 @@ presets:
     inner_adj: 0
     inner_stagger: -0.5ky
     
-    thumb_offsetx: .6kx
-    thumb_offsety: -1.25ky
+    thumb_offsetx: 1kx
+    thumb_offsety: -1ky
 
     thumb_tucky_splay: -8
 
@@ -143,7 +143,7 @@ points:
   zones.mcu:
     anchor:
       ref: matrix_inner_home
-      shift: [0.25promicro_y + 1kx, 0ky]
+      shift: [0.25promicro_y + 1kx, 0.5ky]
     key:
       width: promicro_y
       height: promicro_x
@@ -189,13 +189,13 @@ outlines:
     - what: rectangle
       where:
         - /thumb_.*/
-      size: [px, py + 20]
-      adjust.shift: [0, 10]
+      size: [px, py + 6]
+      adjust.shift: [0, py-ky]
       corner: 2
     - what: rectangle
       where: mcu
-      size: [promicro_y + 9, promicro_x + 4]
-      adjust.shift: [-3, 0]
+      size: [promicro_y + 9, promicro_x + 14]
+      adjust.shift: [-3, -5]
       corner: 2
     - what: circle
       where: /mounting_hole_.*/
