@@ -1,0 +1,6 @@
+[submodule "lib/chelming-kbd.pretty"]
+	path = lib/chelming-kbd.pretty
+	url = https://github.com/chelming/chelming-kbd.pretty.git
+[submodule "lib/keyboard_reversible.pretty"]
+	path = lib/keyboard_reversible.pretty
+	url = https://github.com/50an6xy06r6n/keyboard_reversible.pretty.git
