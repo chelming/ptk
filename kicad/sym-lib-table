@@ -1,0 +1,6 @@
+(sym_lib_table
+  (version 7)
+  (lib (name "promicro")(type "Legacy")(uri "${KIPRJMOD} /../lib/ProMicroKiCad/promicro_library/promicro.lib")(options "")(descr ""))
+  (lib (name "sweepv2-rescue")(type "Legacy")(uri "//wsl.localhost/Ubuntu/home/chris/git/say_gay/kicad/say_gay-rescue.lib")(options "")(descr ""))
+  (lib (name "chelming-reversible")(type "KiCad")(uri "//wsl.localhost/Ubuntu/home/chris/git/chelming-kbd.pretty/chelming-reversible.kicad_sym")(options "")(descr ""))
+)
