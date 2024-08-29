@@ -20,7 +20,8 @@ presets:
 
     pinky_splay: 5  # Degrees of splay between pinky and ring columns
     pinky_adj: -5   # Adjustment to compensate for splay spacing
-    
+    pinky_skip: false
+
     ring_splay: 3
     ring_adj: -8
     ring_stagger: 0.7ky  # Stagger is relative to the previous column
@@ -30,11 +31,10 @@ presets:
     middle_stagger: 0.5ky
     
     index_splay: 3
-    index_adj: 8
+    index_adj: -8
     index_stagger: -0.3ky
     
-    inner_adj: 0
-    inner_stagger: -0.5ky
+    inner_stagger: -0.75ky
     
     thumb_offsetx: .6kx
     thumb_offsety: -1.25ky
@@ -42,7 +42,7 @@ presets:
     thumb_tucky_splay: -8
 
     thumb_reachy_splay: -8
-    thumb_reacy_adj: -8
+    thumb_reacy_adj: -18
     thumb_reachy_stagger: -0.08ky # Stagger between thumb keys
 
 
@@ -106,7 +106,7 @@ points:
       top:
     columns:
       pinky:
-        rows.top.skip: true
+        rows.top.skip: false
         rows.bottom.skip: true
       ring:
         key.stagger: ring_stagger
